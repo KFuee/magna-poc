@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 @Component({
   selector: "app-root",
   template: `
-    <div class="flex flex-col h-screen items-center p-4">
+    <div class="flex flex-col h-full min-h-screen items-center m-4">
       <div class="max-w-lg space-y-8">
         <h1 class="text-4xl text-center font-bold">
           Magna reader proof of concept
