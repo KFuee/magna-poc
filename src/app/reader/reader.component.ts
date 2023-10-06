@@ -20,6 +20,7 @@ import { BarcodeFormat } from "@zxing/library";
       <!-- Scanner de códigos con botón de encendido de linterna (posición relativa) -->
       <div class="relative w-full max-w-lg">
         <zxing-scanner
+          [device]="currentDevice"
           [formats]="allowedFormats"
           [tryHarder]="true"
           [autofocusEnabled]="true"
@@ -52,7 +53,7 @@ import { BarcodeFormat } from "@zxing/library";
 })
 export class ReaderComponent {
   public availableDevices: MediaDeviceInfo[] = [];
-  public currentDevice: MediaDeviceInfo | null = null;
+  public currentDevice: MediaDeviceInfo | undefined;
 
   public torchEnabled = false;
   public qrResultString: string | null = null;
@@ -65,7 +66,7 @@ export class ReaderComponent {
       const device = this.availableDevices.find(
         (x) => x.deviceId === selected.value
       );
-      this.currentDevice = device || null;
+      this.currentDevice = device || undefined;
     }
   }
 
