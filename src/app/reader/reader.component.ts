@@ -26,15 +26,20 @@ import { BarcodeFormat } from "@zxing/library";
           [autofocusEnabled]="true"
           [torch]="torchEnabled"
           (scanSuccess)="qrResultString = $event"
+          (torchCompatible)="onTorchCompatible($event)"
           (camerasFound)="onCamerasFound($event)"
           (camerasNotFound)="onCamerasNotFound()"
           (permissionResponse)="onPermissionResponse($event)"
         ></zxing-scanner>
         <button
-          class="absolute top-0 right-0 m-2 p-2 bg-blue-500 text-white rounded shadow"
+          class="absolute top-0 right-0 m-2 p-2 bg-blue-500 text-white rounded shadow hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           (click)="torchEnabled = !torchEnabled"
+          [disabled]="!torchCompatible"
         >
-          {{ torchEnabled ? "Apagar" : "Encender" }} linterna
+          {{ !torchCompatible ? "Linterna no disponible" : "" }}
+          <span *ngIf="torchCompatible">
+            {{ torchEnabled ? "Apagar" : "Encender" }} linterna
+          </span>
         </button>
       </div>
 
@@ -55,6 +60,7 @@ export class ReaderComponent {
   public availableDevices: MediaDeviceInfo[] = [];
   public currentDevice: MediaDeviceInfo | undefined;
 
+  public torchCompatible = false;
   public torchEnabled = false;
   public qrResultString: string | null = null;
   public allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.CODE_128];
@@ -76,15 +82,20 @@ export class ReaderComponent {
 
   public onCamerasFound(devices: MediaDeviceInfo[]): void {
     this.availableDevices = devices;
+    this.currentDevice = devices[0];
   }
 
   public onCamerasNotFound(): void {
     alert("No se encontraron cámaras en el dispositivo para escanear");
   }
 
-  public onPermissionResponse(test: boolean): void {
-    if (test) return;
+  public onPermissionResponse(result: boolean): void {
+    if (result) return;
 
     alert("No se han concedido permisos para usar la cámara");
+  }
+
+  public onTorchCompatible(result: boolean): void {
+    this.torchCompatible = result;
   }
 }
